@@ -14,3 +14,5 @@ Plan with everything we need to do from the assignment.
 3. 30 years have passed.
 
 Create user interface with options outlines in the criteria. 
+
+maks to make csv and implement populating array from it. 
