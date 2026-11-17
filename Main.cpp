@@ -10,6 +10,9 @@ void optionFive();
 
 int main() {
     const int COL = 30, ROW = 30;
+int main () {
+
+const col = x, row = y;
 
     int status;
     int currentArray[COL][COL];
