@@ -7,11 +7,10 @@ void optionTwo(int arr[][]);
 void optionThree();
 void optionFour();
 void optionFive();
-
-int main() {
-    const int COL = 30, ROW = 30;
+    
 int main () {
 
+const int COL = 30, ROW = 30;    
 const col = x, row = y;
 
     int status;
