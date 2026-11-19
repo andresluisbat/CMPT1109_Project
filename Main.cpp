@@ -115,7 +115,9 @@ void playGame(int arr[][COL], int newArr[][COL]) {
                     else {
 
                         deadCounter++;
-
+                        if (aliveCounter == 2 || aliveCounter == 3) {
+                                        arr[i][j] = 1; 
+                            }
                     }
                 }
             }
