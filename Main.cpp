@@ -120,6 +120,25 @@ void bestBoard(int arr[][COL], int newArr[][COL]) {
 void displayResults(int arr[][COL]) {
 
 }
+int getMenuChoice()
+{
+    int choice;
+
+    cout << "\nEnter your choice: ";
+    cin >> choice;
+
+    // Repeat if the user enters invalid input
+    while (cin.fail() || choice < 1 || choice > 8)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+
+        cout << "Invalid choice. Enter a number between 1 and 8: ";
+        cin >> choice;
+    }
+
+    return choice;
+}
 
 
 int main() {
@@ -133,7 +152,7 @@ int main() {
     do {
         displayMenu();
 
-        cin >> status;
+        status = getMenuChoice();
 
         switch (status) {
         case 1: displayBoard(board);
