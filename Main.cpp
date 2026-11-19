@@ -140,6 +140,44 @@ int getMenuChoice()
     return choice;
 }
 
+// Counts the number of living cells
+int countLivingCells(int arr[][COL])
+{
+    int total = 0;
+
+    for (int i = 0; i < ROW; i++)
+    {
+        for (int j = 0; j < COL; j++)
+        {
+            if (arr[i][j] == 1)
+            {
+                total++;
+            }
+        }
+    }
+
+    return total;
+}
+
+// Counts the number of dead cells
+int countDeadCells(int arr[][COL])
+{
+    int total = 0;
+
+    for (int i = 0; i < ROW; i++)
+    {
+        for (int j = 0; j < COL; j++)
+        {
+            if (arr[i][j] == 0)
+            {
+                total++;
+            }
+        }
+    }
+    
+    return total;
+}
+
 
 int main() {
 
