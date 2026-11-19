@@ -62,7 +62,7 @@ void loadBoard(int arr[][COL]) {
      }
  }
 
- for (int i = 0; i < COL; i++) {
+ for (int i = 01; i < COL; i++) {
 
      for (int j = 0; j < ROW; j++) {
 
@@ -70,7 +70,7 @@ void loadBoard(int arr[][COL]) {
          if (j < COL -1) {
              inputFile.ignore();
          }
-         cout << arr[i][j];
+         cout << arr[i][j] << ' ';
          
      }
      cout << endl;
@@ -120,25 +120,6 @@ void bestBoard(int arr[][COL], int newArr[][COL]) {
 void displayResults(int arr[][COL]) {
 
 }
-int getMenuChoice()
-{
-    int choice;
-
-    cout << "\nEnter your choice: ";
-    cin >> choice;
-
-    // Repeat if the user enters invalid input
-    while (cin.fail() || choice < 1 || choice > 8)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-
-        cout << "Invalid choice. Enter a number between 1 and 8: ";
-        cin >> choice;
-    }
-
-    return choice;
-}
 
 
 int main() {
@@ -152,7 +133,7 @@ int main() {
     do {
         displayMenu();
 
-        status = getMenuChoice();
+        cin >> status;
 
         switch (status) {
         case 1: displayBoard(board);
