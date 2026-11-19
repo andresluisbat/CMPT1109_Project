@@ -43,27 +43,38 @@ void displayBoard(int arr[][COL]) {
 }
 void loadBoard(int arr[][COL]) {
 
-    ifstream inputFile;
+     ifstream inputFile;
 
-    string fileName;
+ string fileName;
 
-    cout << "Enter name of CSV file: ";
-    cin >> fileName;
+ cout << "Enter name of CSV file: ";
+ cin >> fileName;
 
-    inputFile.open(fileName);
+ inputFile.open(fileName);
 
-    if (!inputFile) {
-        cout << "Error opening file\n";
-        return;
-    }
-  
-    for (int i = 0; i < COL; i++) {
+ if (!inputFile) {
+     cout << "Error opening file, Please Reenter the file\n";
+     while (!inputFile) {
+         cout << "Enter name of CSV file: ";
+         cin >> fileName;
 
-        for (int j = 0; j < ROW; j++) {
+         inputFile.open(fileName);
+     }
+ }
 
-            inputFile >> arr[i][j];
-        }
-    }
+ for (int i = 0; i < COL; i++) {
+
+     for (int j = 0; j < ROW; j++) {
+
+         inputFile >> arr[i][j];
+         if (j < COL -1) {
+             inputFile.ignore();
+         }
+         cout << arr[i][j];
+         
+     }
+     cout << endl;
+ }
 
 
     inputFile.close();
