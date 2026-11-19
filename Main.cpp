@@ -98,7 +98,32 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
 }
 
 void playGame(int arr[][COL], int newArr[][COL]) {
+    
+    for (int i = 0; i < COL; i++) {
 
+        for (int j = 0; j < ROW; j++) {
+            int aliveCounter = 0;
+            int deadCounter = 0;
+            if (arr[i][j] == 1) {
+            for (int l = -1;l <= 1;l++) {
+                for (int m = -1;m <= 1;m++) {
+                    if (arr[i + l][j + m] == 1) {
+
+                        aliveCounter++;
+
+                    }
+                    else {
+
+                        deadCounter++;
+
+                    }
+                }
+            }
+            cout << "our alive is " << aliveCounter << "our dead is " << deadCounter << endl;
+        }
+    }
+
+        }
 }
 
 void addCells(int arr[][COL], int newArr[][COL]) {
