@@ -17,7 +17,7 @@ void bestBoard(int arr[][COL], int newArr[][COL]);
 void displayResults(int arr[][COL]);
 
 void displayMenu() {
-    
+
     cout << "Hello! Welcome to the game of life in CMPT 1109. What would you like to do?\n"
         << "To display the initial state for the game of life press 1\n"
         << "To load a new initial state from a CSV file into memory press 2\n"
@@ -39,42 +39,42 @@ void displayBoard(int arr[][COL]) {
         }
         cout << endl;
     }
- 
+
 }
 void loadBoard(int arr[][COL]) {
 
-     ifstream inputFile;
+    ifstream inputFile;
 
- string fileName;
+    string fileName;
 
- cout << "Enter name of CSV file: ";
- cin >> fileName;
+    cout << "Enter name of CSV file: ";
+    cin >> fileName;
 
- inputFile.open(fileName);
+    inputFile.open(fileName);
 
- if (!inputFile) {
-     cout << "Error opening file, Please Reenter the file\n";
-     while (!inputFile) {
-         cout << "Enter name of CSV file: ";
-         cin >> fileName;
+    if (!inputFile) {
+        cout << "Error opening file, Please Reenter the file\n";
+        while (!inputFile) {
+            cout << "Enter name of CSV file: ";
+            cin >> fileName;
 
-         inputFile.open(fileName);
-     }
- }
+            inputFile.open(fileName);
+        }
+    }
 
- for (int i = 01; i < COL; i++) {
+    for (int i = 0; i < COL; i++) {
 
-     for (int j = 0; j < ROW; j++) {
+        for (int j = 0; j < ROW; j++) {
 
-         inputFile >> arr[i][j];
-         if (j < COL -1) {
-             inputFile.ignore();
-         }
-         cout << arr[i][j] << ' ';
-         
-     }
-     cout << endl;
- }
+            inputFile >> arr[i][j];
+            if (j < COL - 1) {
+                inputFile.ignore();
+            }
+            cout << arr[i][j] << ' ';
+
+        }
+        cout << endl;
+    }
 
 
     inputFile.close();
@@ -87,45 +87,50 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
     for (int i = 0; i < COL; i++) {
 
         for (int j = 0; j < ROW; j++) {
-
-            int neighbours;
-
-
-
-        }
-    }
-
-}
-
-void playGame(int arr[][COL], int newArr[][COL]) {
-    
-    for (int i = 0; i < COL; i++) {
-
-        for (int j = 0; j < ROW; j++) {
             int aliveCounter = 0;
             int deadCounter = 0;
             if (arr[i][j] == 1) {
-            for (int l = -1;l <= 1;l++) {
-                for (int m = -1;m <= 1;m++) {
-                    if (arr[i + l][j + m] == 1) {
+                for (int l = -1;l <= 1;l++) {
+                    for (int m = -1;m <= 1;m++) {
+                        if (i + l < 0 || i + l >= COL)
+                            continue;
+                        if (j + m < 0 || j + m >= COL)
+                            continue;
+                        if (l == 0 && m == 0)
+                            continue;
 
-                        aliveCounter++;
 
-                    }
-                    else {
+                        if (arr[i + l][j + m] == 1) {
 
-                        deadCounter++;
-                        if (aliveCounter == 2 || aliveCounter == 3) {
-                                        arr[i][j] = 1; 
-                            }
+                            aliveCounter++;
+
+                        }
+                        else if (arr[i + l][j + m] == 0) {
+
+                            deadCounter++;
+
+                        }
                     }
                 }
+                //Rules
+                cout << "our alive is " << aliveCounter << " our dead is " << deadCounter << endl;
             }
-            cout << "our alive is " << aliveCounter << "our dead is " << deadCounter << endl;
         }
     }
+}
 
-        }
+void playGame(int arr[][COL], int newArr[][COL]) {
+
+    const int GAME_MAX = 30;
+    int gameCount = 0;
+    for (int gameCount = 1; gameCount < GAME_MAX; gameCount++) {
+        playOneYear(arr, newArr);
+        
+    }
+
+
+
+    
 }
 
 void addCells(int arr[][COL], int newArr[][COL]) {
@@ -182,7 +187,7 @@ int countDeadCells(int arr[][COL])
             }
         }
     }
-    
+
     return total;
 }
 int getMenuChoice()
@@ -216,7 +221,7 @@ int main() {
     do {
         displayMenu();
 
-       status = getMenuChoice();
+        status = getMenuChoice();
 
         switch (status) {
         case 1: displayBoard(board);
