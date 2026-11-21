@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <cctype>
+#include <string>
 using namespace std;
 const int COL = 30, ROW = 30;
 
@@ -125,17 +127,46 @@ void playGame(int arr[][COL], int newArr[][COL]) {
     int gameCount = 0;
     for (int gameCount = 1; gameCount < GAME_MAX; gameCount++) {
         playOneYear(arr, newArr);
-        
+
     }
 
 
 
-    
+
 }
 
 void addCells(int arr[][COL], int newArr[][COL]) {
+    string input;
+    bool isNumber = false;
 
-}
+    while (!isNumber) {
+        cout << "How many cells would you like to add? \n";
+        cin >> input;
+        isNumber = true; 
+        for (int i = 0; i < input.length(); i++) {
+            if (!isdigit(input[i])) {
+                isNumber = false;
+                cout << "\nInvalid answer! ";
+                break;
+            }
+      }
+    }
+
+    int numberOfCells = stoi(input);
+    cout << "Adding " << numberOfCells << " cells.\n";
+
+    for (int i = 0; i < COL; i++) {
+
+        for (int j = 0; j < ROW; j++) {
+
+
+
+
+
+
+        }
+     }
+}   
 
 void countCells(int arr[][COL]) {
 
