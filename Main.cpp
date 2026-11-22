@@ -13,7 +13,6 @@ void loadBoard(int arr[][COL]);
 void playOneYear(int arr[][COL], int newArr[][COL]);
 void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[]);
 void addCells(int arr[][COL], int newArr[][COL]);
-void countCells(int arr[][COL]);
 void randomBoard(int arr[][COL]);
 void bestBoard(int arr[][COL], int newArr[][COL]);
 void displayResults(int arr[][COL], int gamesPlayed, int yearCount[]);
@@ -116,7 +115,7 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
                     newArr[i][j] = 1;
                 }
                 else newArr[i][j] = 0;
-                //Rules           
+                       
             }
             else {
                 if (aliveCounter == ALIVE_AND_REPRODUCE) {
@@ -140,14 +139,13 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
                     {
                         for (int j = 0; j < COL; j++) {
                             arr[i][j] = newArr[i][j];
-                            displayBoard(arr);
                         }
-                        cout << endl;
                     }
+                    displayBoard(arr);
                     cout << endl << endl;
                     if (countLivingCells(arr) == 0) {
                         cout << "All cells have died. Simulation stopped.\n";
-                        return;
+                        break;
                     }
                    yearCount++;
                 }
@@ -203,10 +201,6 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
                     displayBoard(arr);
             }
             
-
-void countCells(int arr[][COL]) {
-
-}
 
 void randomBoard(int arr[][COL]) {
 
