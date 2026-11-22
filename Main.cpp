@@ -135,20 +135,35 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
                 int yearCount = 0;
                 for (int year = 1; year <= GAME_MAX; year++) {
                     playOneYear(arr, newArr);
+                    bool unchanged = true;
+                    for (int i = 0; i < ROW; i++){
+                        for (int j = 0; j < COL ; j++){
+                            if ( arr[i][j] !=newArr[i][j]){
+                                unchanged = false;
+                            
+                            }
+                        }
+                    }
                     for (int i = 0; i < ROW; i++)
                     {
                         for (int j = 0; j < COL; j++) {
                             arr[i][j] = newArr[i][j];
                         }
                     }
+                        yearCount++;
                     displayBoard(arr);
                     cout << endl << endl;
                     if (countLivingCells(arr) == 0) {
                         cout << "All cells have died. Simulation stopped.\n";
                         break;
                     }
-                   yearCount++;
+                
+                 if (unchanged) {
+                     cout << "The board has stopped changing. Simulation stopped. \n";
+                     break;
+                 }
                 }
+                    
                 yearResults[gamesPlayed] = yearCount;
                 gamesPlayed++;
 
