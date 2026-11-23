@@ -1,3 +1,11 @@
+/*
+Authors: Andres Batiz, Atef Abdulhafedh, Maksymilian Sosnowski
+Purpose: CMPT Final project 
+Date: 11/24/2026
+*/
+
+
+
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -11,11 +19,12 @@ void displayMenu();
 void displayBoard(int arr[][COL]);
 void loadBoard(int arr[][COL]);
 void playOneYear(int arr[][COL], int newArr[][COL]);
-void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[], int bestStartBoard[][COL], int& bestAlive);
+void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[], 
+    int bestStartBoard[][COL], int& bestAlive, int aliveResults[], int deadResults[]);
 void addCells(int arr[][COL], int newArr[][COL]);
-void randomBoard(int arr[][COL]);
+void randomBoard(int arr[][COL], int newArr[][COL]);
 void bestBoard(int bestStartBoard[][COL], int bestAlive);
-void displayResults(int arr[][COL], int gamesPlayed, int yearCount[]);
+void displayResults(int aliveResults[], int gamesPlayed, int yearCount[], int deadResults[]);
 int countLivingCells(int arr[][COL]);
 int countDeadCells(int arr[][COL]);
 
@@ -115,7 +124,7 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
                     newArr[i][j] = 1;
                 }
                 else newArr[i][j] = 0;
-
+                       
             }
             else {
                 if (aliveCounter == ALIVE_AND_REPRODUCE) {
@@ -129,18 +138,28 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
         }
     }
 }
-            void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearResults[]) {
+            void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearResults[], 
+                int bestStartBoard[][COL], int& bestAlive, int aliveResults[], int deadResults[]) {
+                //Save a copy of the starting board before playGame overwrites arr
+          
+                int initialBoard[ROW][COL];
+                for (int i = 0; i < ROW; i++) {
+                    for (int j = 0; j < COL; j++) {
+                        initialBoard[i][j] = arr[i][j];
+                    }
+                }
 
                 const int GAME_MAX = 30;
                 int yearCount = 0;
+
                 for (int year = 1; year <= GAME_MAX; year++) {
                     playOneYear(arr, newArr);
                     bool unchanged = true;
-                    for (int i = 0; i < ROW; i++){
-                        for (int j = 0; j < COL ; j++){
-                            if ( arr[i][j] !=newArr[i][j]){
+                    for (int i = 0; i < COL; i++) {
+                        for (int j = 0; j < ROW; j++) {
+                            if (arr[i][j] != newArr[i][j]) {
                                 unchanged = false;
-                            
+
                             }
                         }
                     }
@@ -150,112 +169,91 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
                             arr[i][j] = newArr[i][j];
                         }
                     }
-                        yearCount++;
+                    yearCount++;
                     displayBoard(arr);
                     cout << endl << endl;
                     if (countLivingCells(arr) == 0) {
                         cout << "All cells have died. Simulation stopped.\n";
                         break;
                     }
-                
-                 if (unchanged) {
-                     cout << "The board has stopped changing. Simulation stopped. \n";
-                     break;
-                 }
+
+                    if (unchanged) {
+                        cout << "The board has stopped changing. Simulation stopped.";
+                        break;
+                    }
                 }
-                    
+
+              
+
+                int aliveAtEnd = countLivingCells(arr);
+                if (aliveAtEnd > bestAlive) {
+                    bestAlive = aliveAtEnd;
+                    for (int i = 0; i < ROW; i++) {
+                        for (int j = 0; j < COL; j++) {
+                            bestStartBoard[i][j] = initialBoard[i][j];
+                        }
+                    }
+                }
+
+                aliveResults[gamesPlayed] = countLivingCells(arr);
+                deadResults[gamesPlayed] = countDeadCells(arr);
                 yearResults[gamesPlayed] = yearCount;
+                
                 gamesPlayed++;
-void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearResults[], int bestStartBoard[][COL], int& bestAlive) {
-    // Save a copy of the starting board before playGame overwrites arr
-    int initialBoard[ROW][COL];
-    for (int i = 0; i < ROW; i++) {
-        for (int j = 0; j < COL; j++) {
-            initialBoard[i][j] = arr[i][j];
-        }
-    }
-
-    const int GAME_MAX = 30;
-    int yearCount = 0;
-    for (int year = 1; year <= GAME_MAX; year++) {
-        playOneYear(arr, newArr);
-        for (int i = 0; i < ROW; i++)
-        {
-            for (int j = 0; j < COL; j++) {
-                arr[i][j] = newArr[i][j];
             }
-        }
-        displayBoard(arr);
-        cout << endl << endl;
-        if (countLivingCells(arr) == 0) {
-            cout << "All cells have died. Simulation stopped.\n";
-            break;
-        }
-        yearCount++;
-    }
-    yearResults[gamesPlayed] = yearCount;
-    gamesPlayed++;
 
-    int aliveAtEnd = countLivingCells(arr);
-    if (aliveAtEnd > bestAlive) {
-        bestAlive = aliveAtEnd;
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COL; j++) {
-                bestStartBoard[i][j] = initialBoard[i][j];
+            void addCells(int arr[][COL], int newArr[][COL]) {
+                string input;
+                bool isNumber = false;
+
+                while (!isNumber) {
+                    cout << "How many cells would you like to add? \n";
+                    cin >> input;
+
+                    isNumber = !input.empty();
+
+                    for (int i = 0; i < input.length(); i++) {
+                        if (!isdigit(input[i])) {
+                            isNumber = false;
+                            break;
+                        }
+                    }
+
+                    if (cin.fail() || isNumber && stoi(input) <= 0) {
+                        cin.clear();
+                        cin.ignore(10000, '\n');
+                        isNumber = false;
+                        cout << "\nPlease enter a positive number! ";
+                    }
+
+                    if (isNumber && stoi(input) > countDeadCells(arr)) {
+                        isNumber = false;
+                        cout << "\nThere are not enough empty cells, enter a smaller number";
+                    }
+                    if (!isNumber) {
+                        cout << "\nInvalid answer!\n";
+                    }
+                }
+                    int numberOfCells = stoi(input);
+                    int cellsAdded = 0;
+
+                    cout << "Adding " << numberOfCells << " cells.\n";
+                    while (cellsAdded < numberOfCells) {
+                        int randomRow = rand() % ROW;
+                        int randomCol = rand() % COL;
+
+                        if (arr[randomRow][randomCol] == 0) {
+                            arr[randomRow][randomCol] = 1;
+                            cellsAdded++;
+                        }
+                    }
+
+                    displayBoard(arr);
             }
-        }
-    }
-}
+            
 
-void addCells(int arr[][COL], int newArr[][COL]) {
-    string input;
-    bool isNumber = false;
+void randomBoard(int arr[][COL], int newArr[][COL]) {
 
-    while (!isNumber) {
-        cout << "How many cells would you like to add? \n";
-        cin >> input;
-
-        isNumber = !input.empty();
-
-        for (int i = 0; i < input.length(); i++) {
-            if (!isdigit(input[i])) {
-                isNumber = false;
-                break;
-            }
-        }
-
-        if (isNumber && stoi(input) <= 0) {
-            isNumber = false;
-            cout << "\nPlease enter a positive number! ";
-        }
-
-        if (isNumber && stoi(input) > countDeadCells(arr)) {
-            isNumber = false;
-            cout << "\nThere are not enough empty cells, enter a smaller number";
-        }
-        if (!isNumber) {
-            cout << "Invalid answer!\n";
-        }
-    }
-    int numberOfCells = stoi(input);
-    int cellsAdded = 0;
-
-    cout << "Adding " << numberOfCells << " cells.\n";
-    while (cellsAdded < numberOfCells) {
-        int randomRow = rand() % ROW;
-        int randomCol = rand() % COL;
-
-        if (arr[randomRow][randomCol] == 0) {
-            arr[randomRow][randomCol] = 1;
-            cellsAdded++;
-        }
-    }
-
-    displayBoard(arr);
-}
-
-
-void randomBoard(int arr[][COL]) {
 
 }
 
@@ -267,17 +265,18 @@ void bestBoard(int bestStartBoard[][COL], int bestAlive) {
 
     cout << "The best initial board ended with " << bestAlive << " living cells:\n";
     displayBoard(bestStartBoard);
+
+
+
 }
 
-void displayResults(int arr[][COL], int gamesPlayed, int yearCount[]) {
-    int deadResults = countDeadCells(arr);
-    int aliveResults = countLivingCells(arr);
+void displayResults(int aliveResults[], int gamesPlayed, int yearCount[], int deadResults[]) {
 
     for (int i = 0; i < gamesPlayed; i++) {
-        cout << "\nGame " << i + 1 << endl;
-        cout << "Living cells: " << aliveResults << endl;
-        cout << "Dead cells: " << deadResults << endl;
-        cout << "Years played: " << yearCount[i] << endl;
+        cout << "\nGame " << i + 1 << ": " << endl;
+        cout << "Living cells: " << aliveResults[i] << endl;
+        cout << "Dead cells: " << deadResults[i] << endl;
+        cout << "Years played: " << yearCount[i] << endl << endl;
     }
 }
 
@@ -344,6 +343,8 @@ int main() {
     int newBoard[ROW][COL] = { 0 };
     int gamesPlayed = 0;
     int yearCount[MAX_SIZE];
+    int aliveResults[MAX_SIZE];
+    int deadResults[MAX_SIZE];
     int bestStartBoard[ROW][COL] = { 0 };
     int bestAlive = -1;
 
@@ -362,19 +363,18 @@ int main() {
         case 2: loadBoard(board);
             break;
 
-        case 3: playGame(board, newBoard, gamesPlayed, yearCount, bestStartBoard, bestAlive);
+        case 3: playGame(board, newBoard, gamesPlayed, yearCount, bestStartBoard, bestAlive, aliveResults, deadResults);
             break;
 
         case 4: addCells(board, newBoard);
             break;
 
-        case 5: displayResults(board, gamesPlayed, yearCount);
+        case 5: displayResults(aliveResults, gamesPlayed, yearCount, deadResults);
             break;
 
-        case 6: randomBoard(board);
+        case 6: randomBoard(board, newBoard);
             break;
-
-        case 7: bestBoard(bestStartBoard, bestAlive);
+        case 7:  bestBoard(bestStartBoard, bestAlive);
             break;
 
         case 8:cout << "Thanks for playing\n";
