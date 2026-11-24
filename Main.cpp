@@ -69,7 +69,7 @@ void loadBoard(int arr[][COL]) {
     for (int i = 0; i < COL; i++) {
 
         for (int j = 0; j < ROW; j++) {
-
+         inputFile >> arr[i][j];
             if (arr[i][j] != 0 && arr[i][j] != 1) {
     cout << "Invalid board. Only 0 and 1 are allowed.\n";
     return;
