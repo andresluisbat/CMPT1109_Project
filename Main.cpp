@@ -58,7 +58,6 @@ void loadBoard(int arr[][COL]) {
     if (!inputFile) {
         cout << "Error opening file, Please Reenter the file\n";
         while (!inputFile) {
-            inputFile.clear();
             cout << "Enter name of CSV file: ";
             cin >> fileName;
 
@@ -69,11 +68,8 @@ void loadBoard(int arr[][COL]) {
     for (int i = 0; i < COL; i++) {
 
         for (int j = 0; j < ROW; j++) {
-         inputFile >> arr[i][j];
-            if (arr[i][j] != 0 && arr[i][j] != 1) {
-    cout << "Invalid board. Only 0 and 1 are allowed.\n";
-    return;
-}
+
+            inputFile >> arr[i][j];
             if (j < COL - 1) {
                 inputFile.ignore();
             }
@@ -133,92 +129,48 @@ void playOneYear(int arr[][COL], int newArr[][COL]) {
         }
     }
 }
-
-void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed,
-    int yearResults[], int bestStartBoard[][COL], int& bestAlive) {
-
-    // 100-game array limit
-    if (gamesPlayed >= 100) {
-        cout << "Maximum number of games reached.\n";
-        return;
+void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearResults[], int aliveCount[], int bestStartBoard[][COL], int& bestAlive) {
+   
+    // Save a copy of the starting board before playGame overwrites arr
+    int initialBoard[ROW][COL];
+    for (int i = 0; i < ROW; i++) {
+        for (int j = 0; j < COL; j++) {
+            initialBoard[i][j] = arr[i][j];
+        }
     }
-    
-    // Save a copy of the starting board
-int initialBoard[ROW][COL];
-int currentBoard[ROW][COL];
-
-for (int i = 0; i < ROW; i++) {
-    for (int j = 0; j < COL; j++) {
-        initialBoard[i][j] = arr[i][j];
-        currentBoard[i][j] = arr[i][j];
-    }
-}
 
     const int GAME_MAX = 30;
     int yearCount = 0;
-
     for (int year = 1; year <= GAME_MAX; year++) {
-
-        playOneYear(currentBoard, newArr);
-
-        // Check if the board has stopped changing
-        bool unchanged = true;
-
-        for (int i = 0; i < ROW; i++) {
+        playOneYear(arr, newArr);
+        for (int i = 0; i < ROW; i++)
+        {
             for (int j = 0; j < COL; j++) {
-                if (currentBoard[i][j] != newArr[i][j]) {
-                    unchanged = false;
-                }
+                arr[i][j] = newArr[i][j];
             }
         }
-
-        // Copy the new generation into the current board
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COL; j++) {
-               currentBoard[i][j] = newArr[i][j];
-            }
-        }
-
-        yearCount++;
-
-        displayBoard(currentBoard);
+        displayBoard(arr);
         cout << endl << endl;
-
-        // Stop if all cells have died
         if (countLivingCells(arr) == 0) {
             cout << "All cells have died. Simulation stopped.\n";
             break;
         }
-
-        // Stop if the board has stopped changing
-        if (unchanged) {
-            cout << "The board has stopped changing. Simulation stopped.\n";
-            break;
-        }
+        yearCount++;
     }
-
-    // Save the number of years played
     yearResults[gamesPlayed] = yearCount;
     aliveCount[gamesPlayed] = countLivingCells(arr);
     gamesPlayed++;
 
-    // Check the final number of living cells
-    int aliveAtEnd = countLivingCells(currentBoard);
-    
-    // Save the best starting board
+    int aliveAtEnd = countLivingCells(arr);
     if (aliveAtEnd > bestAlive) {
         bestAlive = aliveAtEnd;
-
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
                 bestStartBoard[i][j] = initialBoard[i][j];
             }
         }
     }
-
-    gamesPlayed++;
 }
-
 
 void addCells(int arr[][COL], int newArr[][COL]) {
     string input;
@@ -294,7 +246,7 @@ void randomBoard(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCo
 
     // 3. Generate a new board and play it to completion 'gameCount' times
     for (int game = 0; game < gameCount; game++) {
-        cout << "\nRandom Game " << game + 1 << "\n";
+        cout << "\n--- Random Game " << game + 1 << " ---\n";
 
         // Populate every cell randomly based on probability
         for (int i = 0; i < ROW; i++) {
@@ -395,14 +347,13 @@ int main() {
     const int MAX_SIZE = 100;
     int board[ROW][COL] = { 0 };
     int newBoard[ROW][COL] = { 0 };
-    int initialBoard[ROW][COL] = { 0 };
     int gamesPlayed = 0;
     int yearCount[MAX_SIZE];
     int aliveCount[MAX_SIZE];
     int bestStartBoard[ROW][COL] = { 0 };
     int bestAlive = -1;
 
-    srand(static_cast<unsigned int>(time(0)));
+    srand(time(0));
 
     int status;
     do {
