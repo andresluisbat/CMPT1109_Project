@@ -1,3 +1,8 @@
+/*
+Authors: Andres Batiz, Maksymilian Sosnowski, Atef Abdulhafedh
+Purpose: Final Project Conways Game of Life
+Date: 11/24/2026
+*/
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -346,7 +351,7 @@ void randomBoard(int arr[][COL], int newArr[][COL],
         }
 
         playGame(arr, newArr, gamesPlayed, yearCount, aliveCount,
-                 bestStartBoard, bestAlive);
+            bestStartBoard, bestAlive);
     }
 }
 
