@@ -350,6 +350,10 @@ void randomBoard(int arr[][COL], int newArr[][COL],
             }
         }
 
+        cout << "Year 0 (Initial Board):\n";
+        displayBoard(arr);
+        cout << endl << endl;
+
         playGame(arr, newArr, gamesPlayed, yearCount, aliveCount,
             bestStartBoard, bestAlive);
     }
