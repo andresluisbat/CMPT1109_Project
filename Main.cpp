@@ -11,11 +11,11 @@ void displayMenu();
 void displayBoard(int arr[][COL]);
 void loadBoard(int arr[][COL]);
 void playOneYear(int arr[][COL], int newArr[][COL]);
-void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[], int bestStartBoard[][COL], int& bestAlive);
+void playGame(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[], int aliveCount[], int bestStartBoard[][COL], int& bestAlive);
 void addCells(int arr[][COL], int newArr[][COL]);
-void randomBoard(int arr[][COL]);
+void randomBoard(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[], int aliveCount[], int bestStartBoard[][COL], int& bestAlive);
 void bestBoard(int bestStartBoard[][COL], int bestAlive);
-void displayResults(int arr[][COL], int gamesPlayed, int yearCount[]);
+void displayResults(int gamesPlayed, int yearCount[], int aliveCount[]);
 int countLivingCells(int arr[][COL]);
 int countDeadCells(int arr[][COL]);
 
@@ -199,6 +199,8 @@ for (int i = 0; i < ROW; i++) {
 
     // Save the number of years played
     yearResults[gamesPlayed] = yearCount;
+    aliveCount[gamesPlayed] = countLivingCells(arr);
+    gamesPlayed++;
 
     // Check the final number of living cells
     int aliveAtEnd = countLivingCells(currentBoard);
@@ -266,8 +268,51 @@ void addCells(int arr[][COL], int newArr[][COL]) {
 }
 
 
-void randomBoard(int arr[][COL]) {
+void randomBoard(int arr[][COL], int newArr[][COL], int& gamesPlayed, int yearCount[], int aliveCount[], int bestStartBoard[][COL], int& bestAlive) {
+    int gameCount;
+    double probability;
 
+    // 1. Ask for and validate how many games to play
+    cout << "\nHow many times do you want to play the game? ";
+    cin >> gameCount;
+    while (cin.fail() || gameCount <= 0 || gamesPlayed + gameCount > 100) {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid input. Enter a positive number (max " << 100 - gamesPlayed << " games remaining): ";
+        cin >> gameCount;
+    }
+
+    // 2. Ask for and validate the starting survival probability
+    cout << "What probability for any given cell is alive (0.0 to 1.0)? ";
+    cin >> probability;
+    while (cin.fail() || probability < 0.0 || probability > 1.0) {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid probability. Enter a decimal between 0.0 and 1.0: ";
+        cin >> probability;
+    }
+
+    // 3. Generate a new board and play it to completion 'gameCount' times
+    for (int game = 0; game < gameCount; game++) {
+        cout << "\nRandom Game " << game + 1 << "\n";
+
+        // Populate every cell randomly based on probability
+        for (int i = 0; i < ROW; i++) {
+            for (int j = 0; j < COL; j++) {
+                double randomNum = static_cast<double>(rand()) / RAND_MAX;
+
+                if (randomNum < probability) {
+                    arr[i][j] = 1;
+                }
+                else {
+                    arr[i][j] = 0;
+                }
+            }
+        }
+
+        // Play the board to completion and record stats
+        playGame(arr, newArr, gamesPlayed, yearCount, aliveCount, bestStartBoard, bestAlive);
+    }
 }
 
 void bestBoard(int bestStartBoard[][COL], int bestAlive) {
@@ -280,14 +325,11 @@ void bestBoard(int bestStartBoard[][COL], int bestAlive) {
     displayBoard(bestStartBoard);
 }
 
-void displayResults(int arr[][COL], int gamesPlayed, int yearCount[]) {
-    int deadResults = countDeadCells(arr);
-    int aliveResults = countLivingCells(arr);
-
+void displayResults(int gamesPlayed, int yearCount[], int aliveCount[]) {
     for (int i = 0; i < gamesPlayed; i++) {
         cout << "\nGame " << i + 1 << endl;
-        cout << "Living cells: " << aliveResults << endl;
-        cout << "Dead cells: " << deadResults << endl;
+        cout << "Living cells: " << aliveCount[i] << endl;
+        cout << "Dead cells: " << (ROW * COL) - aliveCount[i] << endl;
         cout << "Years played: " << yearCount[i] << endl;
     }
 }
@@ -356,6 +398,7 @@ int main() {
     int initialBoard[ROW][COL] = { 0 };
     int gamesPlayed = 0;
     int yearCount[MAX_SIZE];
+    int aliveCount[MAX_SIZE];
     int bestStartBoard[ROW][COL] = { 0 };
     int bestAlive = -1;
 
@@ -374,16 +417,16 @@ int main() {
         case 2: loadBoard(board);
             break;
 
-        case 3: playGame(board, newBoard, gamesPlayed, yearCount, bestStartBoard, bestAlive);
+        case 3: playGame(board, newBoard, gamesPlayed, yearCount, aliveCount, bestStartBoard, bestAlive);
             break;
 
         case 4: addCells(board, newBoard);
             break;
 
-        case 5: displayResults(board, gamesPlayed, yearCount);
+        case 5: displayResults(gamesPlayed, yearCount, aliveCount);
             break;
 
-        case 6: randomBoard(board);
+        case 6: randomBoard(board, newBoard, gamesPlayed, yearCount, aliveCount, bestStartBoard, bestAlive);
             break;
 
         case 7: bestBoard(bestStartBoard, bestAlive);
